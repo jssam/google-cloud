@@ -3,7 +3,7 @@
 gcloud compute firewall-rules delete open-access
 
 
-////for start bastion
+////for start bastion vm instance me ja kar select karke
 
 gcloud compute instances start bastion
 
