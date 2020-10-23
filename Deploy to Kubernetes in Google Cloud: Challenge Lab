@@ -61,13 +61,18 @@ printf $(kubectl get secret cd-jenkins -o jsonpath="{.data.jenkins-admin-passwor
 /// username me admin
 ////password last command se prompt me aya hoga
 ////go to manage jenkins
+/////go to manage 
 ////go to global 
 //// adding some credential 
 ////select google service account with meta data
+///than ok
+
+
 ////click on new item after back to credwntial domain 
+////click on new item
 /////enter name me valkyrie-app ye dal and pipeline select kar or ok
 ////sabse neche pipeline script from Scm karna hai 
-/////oske neche git select karna hai 
+/////oske neche git select karna hai  pipline scm last me karega to aa jayegi
 ////repository me cmd se cpoy karke paste 
 gcloud source repos list
 ///vha phele gcloud source repos list ye command chla lena
