@@ -1,0 +1,70 @@
+1. gcloud auth list
+2. gcloud config list project
+3. gcloud config set compute/zone us-east1-b
+4. gcloud compute instances create nucleus-jumphost \
+          --network nucleus-vpc \
+          --zone us-east1-b  \
+          --machine-type f1-micro  \
+    --image-family debian-9  \
+          --image-project debian-cloud \
+          --scopes cloud-platform \
+          --no-address
+5. gcloud container clusters create nucleus-backend \
+          --num-nodes 1 \
+          --network nucleus-vpc \
+          --region us-east1
+          --zone us-east1-b
+6. gcloud container clusters get-credentials nucleus-backend \
+          --region us-east1
+7. kubectl create deployment hello-app \
+          --image=gcr.io/google-samples/hello-app:2.0
+8. kubectl expose deployment hello-app \
+          --type=LoadBalancer \
+          --port 8080
+
+9. cat << EOF > startup.sh
+#! /bin/bash
+apt-get update
+apt-get install -y nginx
+service nginx start
+sed -i -- 's/nginx/Google Cloud Platform - '"\$HOSTNAME"'/' /var/www/html/index.nginx-debian.html
+EOF
+10. gcloud compute instance-templates create web-server-template \
+          --metadata-from-file startup-script=startup.sh \
+          --network nucleus-vpc \
+          --machine-type g1-small \
+          --region us-east1
+11. gcloud compute target-pools create nginx-pool
+12. gcloud compute instance-groups managed create web-server-group \
+          --base-instance-name web-server \
+          --size 2 \
+          --template web-server-template \
+          --region us-east1
+13. gcloud compute firewall-rules create web-server-firewall \
+          --allow tcp:80 \
+          --network nucleus-vpc
+14.gcloud compute http-health-checks create http-basic-check
+15. gcloud compute instance-groups managed \
+          set-named-ports web-server-group \
+          --named-ports http:80 \
+          --region us-east1
+16. gcloud compute backend-services create web-server-backend \
+          --protocol HTTP \
+          --http-health-checks http-basic-check \
+          --global
+17. gcloud compute backend-services add-backend web-server-backend \
+          --instance-group web-server-group \
+          --instance-group-region us-east1 \
+          --global
+
+
+18. gcloud compute url-maps create web-server-map \
+          --default-service web-server-backend
+19. gcloud compute target-http-proxies create http-lb-proxy \
+          --url-map web-server-map
+20. gcloud compute forwarding-rules create http-content-rule \
+        --global \
+        --target-http-proxy http-lb-proxy \
+        --ports 80
+21. gcloud compute forwarding-rules list
+22. http://35.231.114.36/
