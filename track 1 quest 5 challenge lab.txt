@@ -1,0 +1,28 @@
+gcloud compute firewall-rules delete open-access
+
+2. go to vm instance 
+3. tik on badson 
+4. click on play
+5.
+gcloud compute firewall-rules create ssh-ingress --allow=tcp:22 --source-ranges 35.235.240.0/20 --target-tags ssh-ingress --network acme-vpc
+gcloud compute instances add-tags bastion --tags=ssh-ingress --zone=us-central1-b
+
+
+gcloud compute firewall-rules create http-ingress --allow=tcp:80 --source-ranges 0.0.0.0/0 --target-tags http-ingress --network acme-vpc
+
+gcloud compute instances add-tags juice-shop --tags=http-ingress --zone=us-central1-b
+
+
+
+gcloud compute firewall-rules create internal-ssh-ingress --allow=tcp:22 --source-ranges 192.168.10.0/24 --target-tags internal-ssh-ingress --network acme-vpc
+
+gcloud compute instances add-tags juice-shop --tags=internal-ssh-ingress --zone=us-central1-b
+
+
+6. go to the ssh of badson 
+copy ip of oske neche vala 
+7.
+use comand in ssh 
+shh <ip jo bhi thi>
+yes 
+bas ho gyi
